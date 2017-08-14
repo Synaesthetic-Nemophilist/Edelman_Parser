@@ -1,6 +1,7 @@
 
-
-
+%{ /* C declarations used in actions */
+ #include <stdio.h>
+%}
 
 
 %TOKEN ID INT DOUBLE
@@ -17,9 +18,12 @@
 %%
 
 
+expr_list:
+		expr
+	|	expr_list','expr
+	;
 
-
-const_exp:
+const_expr:
 		expr
 		;
 
