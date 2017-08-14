@@ -3,36 +3,41 @@
 #include <math.h>
 %}
 
-DIGIT    [0-9]
-ID       [a-z][a-z0-9]*
 
 %%
 
-{DIGIT}+    {
-            printf( "An integer: %s (%d)\n", yytext,
-                    atoi( yytext ) );
-            }
+[ \t\n]                      ;
+[a-zA-Z_][a-zA-Z0-9_]*      { return ID; }
+[0-9]+.[0-9]*               { return DOUBLE; }
+[0-9]+                      { return INT; }
+"="     { return ASSIGN; }
+"*="    { return MUL_ASSIGN; }
+"/="    { return DIV_ASSIGN; }
+"%="    { return MOD_ASSIGN; }
+"+="    { return ADD_ASSIGN; }
+"-="    { return SUB_ASSIGN; }
+"++"    { return INC_OP; }
+"--"    { return DEC_OP; }
+"*"     { return MUL; }
+"/"     { return DIV; }
+"%"     { return MOD; }
+"+"     { return PLUS; }
+"-"     { return MINUS; }
+"<"     { return LT; }
+">"     { return GT; }
+"<="    { return LT_EQ; }
+">="    { return GT_EQ; }
+"=="    { return EQ; }
+"!="    { return NOT_EQ; }
+"&&"    { return AND; }
+"||"    { return OR; }
+"&"     { return BIN_AND; }
+"!"     { return NOT; }
+.       { printf("Unknown token: %s\n", yytext); yyterminate(); }
 
-{DIGIT}+"."{DIGIT}*        {
-            printf( "A float: %s (%g)\n", yytext,
-                    atof( yytext ) );
-            }
-
-if|then|begin|end|procedure|function        {
-            printf( "A keyword: %s\n", yytext );
-            }
-
-{ID}        printf( "An identifier: %s\n", yytext );
-
-"+"|"-"|"*"|"/"   printf( "An operator: %s\n", yytext );
-
-"{"[^}\n]*"}"     /* eat up one-line comments */
-
-[ \t\n]+          /* eat up whitespace */
-
-.           printf( "Unrecognized character: %s\n", yytext );
 
 %%
+
 
 int main(int argc, char **argv ) {
     ++argv, --argc;  /* skip over program name */
