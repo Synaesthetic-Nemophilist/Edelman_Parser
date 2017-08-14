@@ -18,6 +18,15 @@
 %%
 
 
+expr:
+		ID
+	|	'('expr')'	{ $$ = $2; }
+	|	"true"
+	|	"false"
+	|	"NULL"
+	|	INT
+	|	
+
 expr_list:
 		expr
 	|	expr_list','expr
