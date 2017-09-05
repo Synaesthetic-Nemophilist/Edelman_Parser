@@ -28,7 +28,22 @@ expr:
 	|	INT
 	|	CHAR
 	|	DOUBLE
-	|	
+	|	STRING
+	|	'('')'
+	|	ID'('')'
+	|	'('expr_list')'
+	|	ID'('expr_list')'
+	|	expr'['expr']'
+	|	un_op expr
+	|	expr bin_op expr
+	|	un_assgn_op expr
+	|	expr un_assgn_op
+	|	expr bin_assgn_op expr
+	|	'('data_type')'expr
+	|	expr'?'expr':'expr
+	|	"new"data_type'['expr']'
+	|	"new"data_type
+	|	"delete"expr
 
 expr_list:
 		expr

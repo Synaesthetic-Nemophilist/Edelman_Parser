@@ -8,11 +8,12 @@ extern double yylval;
 
 %%
 
-[ \t\n]                      ;
-[a-zA-Z_][a-zA-Z0-9_]*      { return ID; }
-[0-9]+.[0-9]*               { return DOUBLE; }
-[0-9]+                      { return INT; }
-[a-zA-Z]                    { return CHAR; }
+[ \t\n]                         ;
+[a-zA-Z_][a-zA-Z0-9_]*          { return ID; }
+[0-9]+.[0-9]*                   { return DOUBLE; }
+[0-9]+                          { return INT; }
+^'[a-zA-Z]'$                    { return CHAR; }
+^"[a-zA-Z0-9_][a-zA-Z0-9_]*"$   { return STRING; }
 "="     { return ASSIGN; }
 "*="    { return MUL_ASSIGN; }
 "/="    { return DIV_ASSIGN; }
