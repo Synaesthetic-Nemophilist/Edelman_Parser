@@ -19,6 +19,46 @@
 %%
 
 
+func_def:
+		
+
+
+statement:
+		';'
+	|	expr';'
+	|	'{'statementList'}'
+	|	"if"'('expr')'statement"else"statement
+	|	"if"'('expr')'statement
+	|	ID':'"for"'('expr';'expr';'expr')'statement
+	|	ID':'"for"'('expr';'expr';'')'statement
+	|	ID':'"for"'('expr';'';'expr')'statement
+	|	ID':'"for"'('expr';'';'')'statement
+	|	ID':'"for"'('';'expr';'expr')'statement
+	|	ID':'"for"'('';'expr';'')'statement
+	|	ID':'"for"'('';'';'expr')'statement
+	|	ID':'"for"'('';'';'')'statement
+	|	"for"'('expr';'expr';'expr')'statement
+	|	"for"'('expr';'expr';'')'statement
+	|	"for"'('expr';'';'expr')'statement
+	|	"for"'('expr';'';'')'statement
+	|	"for"'('';'expr';'expr')'statement
+	|	"for"'('';'expr';'')'statement
+	|	"for"'('';'';'expr')'statement
+	|	"for"'('';'';'')'statement
+	|	"continue"ID';'
+	|	"continue"';'
+	|	"break"ID';'
+	|	"break"';'
+	|	"return"expr';'
+	|	"return"';'
+	;
+
+
+statementList:
+		statementList statement
+	|
+	;
+
 expr:
 		ID
 	|	'('expr')'	{ $$ = $2; }
@@ -44,6 +84,7 @@ expr:
 	|	"new"data_type'['expr']'
 	|	"new"data_type
 	|	"delete"expr
+	;
 
 expr_list:
 		expr
