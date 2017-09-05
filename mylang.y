@@ -20,13 +20,20 @@
 
 
 func_def:
-		
+		result_type ID'('parameter_list')''{'declare_list statement_list'}'
+	|	result_type ID'('')''{'declare_list statement_list'}'
+	;
 
+
+declare_list:
+		declare_list declaration
+	|
+	;
 
 statement:
 		';'
 	|	expr';'
-	|	'{'statementList'}'
+	|	'{'statement_list'}'
 	|	"if"'('expr')'statement"else"statement
 	|	"if"'('expr')'statement
 	|	ID':'"for"'('expr';'expr';'expr')'statement
@@ -54,8 +61,8 @@ statement:
 	;
 
 
-statementList:
-		statementList statement
+statement_list:
+		statement_list statement
 	|
 	;
 
