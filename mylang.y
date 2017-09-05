@@ -1,19 +1,20 @@
 
 %{ /* C declarations used in actions */
  #include <stdio.h>
+ #define YYSTYPE double
 %}
 
 
-%TOKEN ID INT DOUBLE
-%RIGHT INC_OP DEC_OP NOT
-%LEFT MUL DIV MOD 
-%LEFT PLUS MINUS
-%LEFT LT GT LT_EQ GT_EQ
-%LEFT EQ NOT_EQ
-%LEFT BIN_AND
-%LEFT AND
-%LEFT OR
-%RIGHT ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN SUB_ASSIGN
+%token ID INT DOUBLE CHAR
+%right INC_OP DEC_OP NOT
+%left MUL DIV MOD
+%left PLUS MINUS
+%left LT GT LT_EQ GT_EQ
+%left EQ NOT_EQ
+%left BIN_AND
+%left AND
+%left OR
+%right ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN SUB_ASSIGN
 
 %%
 
@@ -25,6 +26,8 @@ expr:
 	|	"false"
 	|	"NULL"
 	|	INT
+	|	CHAR
+	|	DOUBLE
 	|	
 
 expr_list:
@@ -35,6 +38,7 @@ expr_list:
 const_expr:
 		expr
 		;
+
 
 un_op:
 		BIN_AND
@@ -73,3 +77,22 @@ bin_assgn_op:
 	|	ADD_ASSIGN
 	|	SUB_ASSIGN
 	;
+
+
+%%
+ 
+#include <stdio.h>
+#include <ctype.ha>
+char *progname;
+ 
+main( argc, argv )
+char *argv[];
+{
+  progname = argv[0];
+  yyparse();
+}
+ 
+yyerror( s )
+char *s;
+{
+  fprintf( stderr ,"%s: %s\n" , progname , s );

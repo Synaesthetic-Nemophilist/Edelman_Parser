@@ -1,6 +1,8 @@
 %{
-/* need this for the call to atof() below */
+#define YYSTYPE double
+#include "mylang.tab.h"
 #include <math.h>
+extern double yylval;
 %}
 
 
@@ -10,6 +12,7 @@
 [a-zA-Z_][a-zA-Z0-9_]*      { return ID; }
 [0-9]+.[0-9]*               { return DOUBLE; }
 [0-9]+                      { return INT; }
+[a-zA-Z]                    { return CHAR; }
 "="     { return ASSIGN; }
 "*="    { return MUL_ASSIGN; }
 "/="    { return DIV_ASSIGN; }
