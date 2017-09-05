@@ -5,7 +5,7 @@
 %}
 
 
-%token ID INT DOUBLE CHAR
+%token ID INT DOUBLE CHAR STRING
 %right INC_OP DEC_OP NOT
 %left MUL DIV MOD
 %left PLUS MINUS
@@ -17,6 +17,83 @@
 %right ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN SUB_ASSIGN
 
 %%
+
+
+program:
+		dec_list
+	;
+		
+
+dec_list:
+		dec_list dec
+ 	|	dec
+ 	;
+
+dec:
+		var_dec
+	|	func_dec
+	|	func_def
+	;
+
+
+var_dec:
+		data_type declarative_list';'
+	;
+
+
+
+declarative_list:
+		declarative
+	|	declarative_list','declarative
+	;
+
+
+data_type:
+		basic_data_type stars
+	;
+
+
+stars:
+		stars'*'
+	|
+	;
+
+
+basic_data_type:
+		"int"
+	|	"char"
+	|	"bool"
+	|	"double"
+	;
+
+
+declarative:
+		ID'['const_expr']'
+	|	ID
+	;
+
+
+func_dec:
+		result_type ID'('parameter_list')'
+	|	result_type ID'('')'
+	;
+
+
+result_type:
+		data_type
+	|	"void"
+	;
+
+
+parameter_list:
+		parameter
+	|	parameter_list','parameter
+	;
+
+parameter:
+		"byref"data_type ID
+	|	data_type ID
+	;
 
 
 func_def:
