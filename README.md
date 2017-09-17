@@ -1,9 +1,7 @@
 **Compilation:**
 
-On OSX: `gcc lex.yy.c -ll`
-
-On Windows: `gcc lex.yy.c -lfl`
+`gcc mylang.tab.c lex.yy.c -ll -o myParser.exe`
 
 **Execution:**
 
-`./a.out test`
+`./myParser.exe input.txt`
