@@ -114,3 +114,10 @@ fabric.properties
 *.lai
 
 # Executables
+executable.out
+
+# FLEX/BISON
+lex.yy.c
+mylang.output
+mylang.tab.c
+mylang.tab.h

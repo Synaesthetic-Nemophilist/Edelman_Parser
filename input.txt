@@ -1,0 +1,9 @@
+intvyvuuy myVar1, myVar2;
+//this is a comment biurbiubvweiuvbewiurbv
+bool* myBool;
+/* ngiwengiuwegiuwebg
+wegwegwegwegwe
+wegwegw
+wegwe
+*/
+charrr** myChar;
