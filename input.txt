@@ -1,4 +1,4 @@
-intvyvuuy myVar1, myVar2;
+int myVar1, myVar2;
 //this is a comment biurbiubvweiuvbewiurbv
 bool* myBool;
 /* ngiwengiuwegiuwebg
@@ -6,4 +6,5 @@ wegwegwegwegwe
 wegwegw
 wegwe
 */
-charrr** myChar;
+char** myChar;
+void* myFunct(int** param1, byref char param2);

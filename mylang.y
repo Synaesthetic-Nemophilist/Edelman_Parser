@@ -105,8 +105,8 @@ declarative:
 
 
 func_dec:
-		basic_data_type ID LPAR parameter_list RPAR
-	|	basic_data_type ID LPAR RPAR
+		basic_data_type stars ID LPAR parameter_list RPAR SEMICOL
+	|	basic_data_type stars ID LPAR RPAR SEMICOL
 	|   func_dec error SEMICOL
 	;
 
@@ -117,8 +117,8 @@ parameter_list:
 	;
 
 parameter:
-		BYREF basic_data_type ID
-	|	basic_data_type ID
+		BYREF basic_data_type stars ID
+	|	basic_data_type stars ID
 	|   error SEMICOL
 	;
 
@@ -211,7 +211,7 @@ expr_list:
 const_expr:
 		expr
     |   const_expr error SEMICOL
-		;
+    ;
 
 
 un_op:
