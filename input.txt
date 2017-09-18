@@ -1,10 +1,22 @@
 int myVar1, myVar2;
-//this is a comment biurbiubvweiuvbewiurbv
 bool* myBool;
-/* ngiwengiuwegiuwebg
-wegwegwegwegwe
-wegwegw
-wegwe
-*/
 char** myChar;
-void* myFunct(int** param1, byref char param2);
+
+//this is a single line comment, ignore me
+
+/* THIS IS A MULTI-LINE COMMENT
+AND SHOULD BE IGNORED BY
+THE PARSER
+*/
+
+
+void* myFunct1(int** param1, byref char param2);
+bool myFunct2();
+
+void* myFunct1(int** param1, byref char param2) {
+    int localVar1;
+    bool* localVar2;
+
+
+
+}

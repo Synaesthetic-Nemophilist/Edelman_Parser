@@ -46,6 +46,8 @@ stringg     ^"[a-zA-Z0-9_][a-zA-Z0-9_]*"$
 {intt}      { printf("Int entered\n"); return INT; }
 {charr}     { return CHAR; }
 {stringg}   { return STRING; }
+"{"     { return LCURL; }
+"}"     { return RCURL; }
 "["     { return LARR; }
 "]"     { return RARR; }
 "("     { return LPAR; }

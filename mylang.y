@@ -107,6 +107,8 @@ declarative:
 func_dec:
 		basic_data_type stars ID LPAR parameter_list RPAR SEMICOL
 	|	basic_data_type stars ID LPAR RPAR SEMICOL
+	|	basic_data_type ID LPAR parameter_list RPAR SEMICOL
+    |	basic_data_type ID LPAR RPAR SEMICOL
 	|   func_dec error SEMICOL
 	;
 
@@ -124,8 +126,10 @@ parameter:
 
 
 func_def:
-		basic_data_type ID LPAR parameter_list RPAR LCURL declare_list statement_list RCURL
-	|	basic_data_type ID LPAR RPAR LCURL declare_list statement_list RCURL
+		basic_data_type stars ID LPAR parameter_list RPAR LCURL declare_list statement_list RCURL
+	|	basic_data_type stars ID LPAR RPAR LCURL declare_list statement_list RCURL
+	|	basic_data_type ID LPAR parameter_list RPAR LCURL declare_list statement_list RCURL
+    |	basic_data_type ID LPAR RPAR LCURL declare_list statement_list RCURL
 	|   func_def error SEMICOL
 	;
 
