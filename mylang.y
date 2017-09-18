@@ -1,7 +1,8 @@
 
 %{ /* C declarations used in actions */
  #include <stdio.h>
- #define YYDEBUG 1
+
+ #define YYSTYPE char*
 
 
 extern int yylex();
@@ -25,12 +26,14 @@ struct errorData *ptr;
 %}
 
 
+%union{
+  char *str;
+}
+
 %start program
-%token IF ELSE FOR COLON CONT RET BREAK TRU FALS NUL QUE NEW DEL
+%token IF ELSE FOR COLON CONT RET BREAK TRU FALS NUL QUE NEW DEL SEMICOL COMMA
 %token ID INT DOUBLE CHAR STRING CHARDEC BOOLDEC DOUBDEC VOIDDEC INTDEC
 %token LARR RARR LPAR RPAR LCURL RCURL
-%left SEMICOL
-%left COMMA
 %right ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN SUB_ASSIGN
 %left OR
 %left AND
@@ -283,7 +286,7 @@ int main(int args, char** argv) {
 	yyin = myfile;
 
 	// parse through the input until there is no more:
-	yydebug = 1;
+	//yydebug = 1;
 	line = 1;
 	errorIndex = 2;
 	ptr = (struct errorData*) malloc(errorIndex * sizeof(struct errorData));

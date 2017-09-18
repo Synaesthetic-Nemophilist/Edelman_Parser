@@ -52,24 +52,24 @@
      QUE = 268,
      NEW = 269,
      DEL = 270,
-     ID = 271,
-     INT = 272,
-     DOUBLE = 273,
-     CHAR = 274,
-     STRING = 275,
-     CHARDEC = 276,
-     BOOLDEC = 277,
-     DOUBDEC = 278,
-     VOIDDEC = 279,
-     INTDEC = 280,
-     LARR = 281,
-     RARR = 282,
-     LPAR = 283,
-     RPAR = 284,
-     LCURL = 285,
-     RCURL = 286,
-     SEMICOL = 287,
-     COMMA = 288,
+     SEMICOL = 271,
+     COMMA = 272,
+     ID = 273,
+     INT = 274,
+     DOUBLE = 275,
+     CHAR = 276,
+     STRING = 277,
+     CHARDEC = 278,
+     BOOLDEC = 279,
+     DOUBDEC = 280,
+     VOIDDEC = 281,
+     INTDEC = 282,
+     LARR = 283,
+     RARR = 284,
+     LPAR = 285,
+     RPAR = 286,
+     LCURL = 287,
+     RCURL = 288,
      SUB_ASSIGN = 289,
      ADD_ASSIGN = 290,
      MOD_ASSIGN = 291,
@@ -110,24 +110,24 @@
 #define QUE 268
 #define NEW 269
 #define DEL 270
-#define ID 271
-#define INT 272
-#define DOUBLE 273
-#define CHAR 274
-#define STRING 275
-#define CHARDEC 276
-#define BOOLDEC 277
-#define DOUBDEC 278
-#define VOIDDEC 279
-#define INTDEC 280
-#define LARR 281
-#define RARR 282
-#define LPAR 283
-#define RPAR 284
-#define LCURL 285
-#define RCURL 286
-#define SEMICOL 287
-#define COMMA 288
+#define SEMICOL 271
+#define COMMA 272
+#define ID 273
+#define INT 274
+#define DOUBLE 275
+#define CHAR 276
+#define STRING 277
+#define CHARDEC 278
+#define BOOLDEC 279
+#define DOUBDEC 280
+#define VOIDDEC 281
+#define INTDEC 282
+#define LARR 283
+#define RARR 284
+#define LPAR 285
+#define RPAR 286
+#define LCURL 287
+#define RCURL 288
 #define SUB_ASSIGN 289
 #define ADD_ASSIGN 290
 #define MOD_ASSIGN 291
@@ -157,7 +157,14 @@
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+#line 29 "mylang.y"
+{
+  char *str;
+}
+/* Line 1529 of yacc.c.  */
+#line 167 "mylang.tab.h"
+	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1

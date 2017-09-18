@@ -1,6 +1,7 @@
 %{
 #include "mylang.tab.h"
 #include <string.h>
+#define YYSTYPE char*
 
 
 extern int line;
@@ -23,82 +24,93 @@ stringg     ^"[a-zA-Z0-9_][a-zA-Z0-9_]*"$
 
 %%
 
-"int"   { return INTDEC; }
-"char"  { return CHARDEC; }
-"bool"  { return BOOLDEC; }
-"double" { return DOUBDEC; }
-"void"  { return VOIDDEC; }
-"byref" { return BYREF; }
-"if"    { return IF; }
-"else"  { return ELSE; }
-"continue" { return CONT; }
-"return"    { return RET; }
-"break" { return BREAK; }
-"true"  { return TRU; }
-"false" { return FALS; }
-"null"  { return NUL; }
-"new"   { return NEW; }
-"delete" { return DEL; }
+"int"   { yylval.str = strdup(yytext); ECHO; return INTDEC; }
+"char"  { yylval.str = strdup(yytext); ECHO; return CHARDEC; }
+"bool"  { yylval.str = strdup(yytext); ECHO; return BOOLDEC; }
+"double" { yylval.str = strdup(yytext); ECHO; return DOUBDEC; }
+"void"  { yylval.str = strdup(yytext); ECHO; return VOIDDEC; }
+"byref" { yylval.str = strdup(yytext); ECHO; return BYREF; }
+"if"    { yylval.str = strdup(yytext); ECHO; return IF; }
+"else"  { yylval.str = strdup(yytext); ECHO; return ELSE; }
+"continue" { yylval.str = strdup(yytext); ECHO; return CONT; }
+"return"    { yylval.str = strdup(yytext); ECHO; return RET; }
+"break" { yylval.str = strdup(yytext); ECHO; return BREAK; }
+"true"  { yylval.str = strdup(yytext); ECHO; return TRU; }
+"false" { yylval.str = strdup(yytext); ECHO; return FALS; }
+"null"  { yylval.str = strdup(yytext); ECHO; return NUL; }
+"new"   { yylval.str = strdup(yytext); ECHO; return NEW; }
+"delete" { yylval.str = strdup(yytext); ECHO; return DEL; }
 
-{idd}       { printf("Text entered\n");return ID; }
-{floatt}    { printf("Float entered\n"); return DOUBLE; }
-{intt}      { printf("Int entered\n"); return INT; }
-{charr}     { return CHAR; }
-{stringg}   { return STRING; }
-"?"     { return QUE; }
-":"     { return COLON; }
-"{"     { return LCURL; }
-"}"     { return RCURL; }
-"["     { return LARR; }
-"]"     { return RARR; }
-"("     { return LPAR; }
-")"     { return RPAR; }
-";"     { return SEMICOL; }
-","     { return COMMA; }
-"="     { return ASSIGN; }
-"*="    { return MUL_ASSIGN; }
-"/="    { return DIV_ASSIGN; }
-"%="    { return MOD_ASSIGN; }
-"+="    { return ADD_ASSIGN; }
-"-="    { return SUB_ASSIGN; }
-"++"    { return INC_OP; }
-"--"    { return DEC_OP; }
-"*"     { return MUL; }
-"/"     { return DIV; }
-"%"     { return MOD; }
-"+"     { return PLUS; }
-"-"     { return MINUS; }
-"<"     { return LT; }
-">"     { return GT; }
-"<="    { return LT_EQ; }
-">="    { return GT_EQ; }
-"=="    { return EQ; }
-"!="    { return NOT_EQ; }
-"&&"    { return AND; }
-"||"    { return OR; }
-"&"     { return BIN_AND; }
-"!"     { return NOT; }
+{idd}       { yylval.str = strdup(yytext); ECHO; return ID; }
+{floatt}    { yylval.str = strdup(yytext); ECHO; return DOUBLE; }
+{intt}      { yylval.str = strdup(yytext); ECHO; return INT; }
+{charr}     { yylval.str = strdup(yytext); ECHO; return CHAR; }
+{stringg}   { yylval.str = strdup(yytext); ECHO; return STRING; }
+"?"     { yylval.str = strdup(yytext); ECHO; return QUE; }
+":"     { yylval.str = strdup(yytext); ECHO; return COLON; }
+"{"     { yylval.str = strdup(yytext); ECHO; return LCURL; }
+"}"     { yylval.str = strdup(yytext); ECHO; return RCURL; }
+"["     { yylval.str = strdup(yytext); ECHO; return LARR; }
+"]"     { yylval.str = strdup(yytext); ECHO; return RARR; }
+"("     { yylval.str = strdup(yytext); ECHO; return LPAR; }
+")"     { yylval.str = strdup(yytext); ECHO; return RPAR; }
+";"     { yylval.str = strdup(yytext); ECHO; return SEMICOL; }
+","     { yylval.str = strdup(yytext); ECHO; return COMMA; }
+"="     { yylval.str = strdup(yytext); ECHO; return ASSIGN; }
+"*="    { yylval.str = strdup(yytext); ECHO; return MUL_ASSIGN; }
+"/="    { yylval.str = strdup(yytext); ECHO; return DIV_ASSIGN; }
+"%="    { yylval.str = strdup(yytext); ECHO; return MOD_ASSIGN; }
+"+="    { yylval.str = strdup(yytext); ECHO; return ADD_ASSIGN; }
+"-="    { yylval.str = strdup(yytext); ECHO; return SUB_ASSIGN; }
+"++"    { yylval.str = strdup(yytext); ECHO; return INC_OP; }
+"--"    { yylval.str = strdup(yytext); ECHO; return DEC_OP; }
+"*"     { yylval.str = strdup(yytext); ECHO; return MUL; }
+"/"     { yylval.str = strdup(yytext); ECHO; return DIV; }
+"%"     { yylval.str = strdup(yytext); ECHO; return MOD; }
+"+"     { yylval.str = strdup(yytext); ECHO; return PLUS; }
+"-"     { yylval.str = strdup(yytext); ECHO; return MINUS; }
+"<"     { yylval.str = strdup(yytext); ECHO; return LT; }
+">"     { yylval.str = strdup(yytext); ECHO; return GT; }
+"<="    { yylval.str = strdup(yytext); ECHO; return LT_EQ; }
+">="    { yylval.str = strdup(yytext); ECHO; return GT_EQ; }
+"=="    { yylval.str = strdup(yytext); ECHO; return EQ; }
+"!="    { yylval.str = strdup(yytext); ECHO; return NOT_EQ; }
+"&&"    { yylval.str = strdup(yytext); ECHO; return AND; }
+"||"    { yylval.str = strdup(yytext); ECHO; return OR; }
+"&"     { yylval.str = strdup(yytext); ECHO; return BIN_AND; }
+"!"     { yylval.str = strdup(yytext); ECHO; return NOT; }
 
-[ \t]           {printf("KENO\n");}
-[\n]            {++line; }
+[ \t]           {yylval.str = strdup(yytext); ECHO;}
+[\n]            {yylval.str = strdup(yytext); ECHO; ++line; }
 
 
 
-\/\*    { BEGIN(MULTICOMMENT); }
+\/\*    {   yylval.str = strdup(yytext); ECHO;
+            BEGIN(MULTICOMMENT);
+        }
 
 <MULTICOMMENT>\*\/    {   // end of a comment: go back to normal parsing.
-                	        BEGIN(INITIAL);
+                          yylval.str = strdup(yytext); ECHO;
+                	      BEGIN(INITIAL);
                 	  }
-<MULTICOMMENT>\n      { ++line; }
-<MULTICOMMENT>.       ;
+<MULTICOMMENT>\n      {
+                          yylval.str = strdup(yytext); ECHO;
+                          ++line;
+                      }
+<MULTICOMMENT>.       yylval.str = strdup(yytext); ECHO;
 
 
-\/\/    { BEGIN(SINGLECOMMENT); }
-<SINGLECOMMENT>\n   {   // end of a comment: go back to normal parsing.
-                	        BEGIN(INITIAL);
-                	        ++line;
-                   }
-<SINGLECOMMENT>.       ;
+\/\/                  {
+                          yylval.str = strdup(yytext); ECHO;
+                          BEGIN(SINGLECOMMENT);
+                      }
+<SINGLECOMMENT>\n     {
+                          // end of a comment: go back to normal parsing.
+                          yylval.str = strdup(yytext); ECHO;
+                	      BEGIN(INITIAL);
+                	      ++line;
+                      }
+<SINGLECOMMENT>.      yylval.str = strdup(yytext); ECHO;
 
 %%
 
