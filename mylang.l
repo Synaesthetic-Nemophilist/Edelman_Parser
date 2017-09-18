@@ -37,7 +37,6 @@ stringg     ^"[a-zA-Z0-9_][a-zA-Z0-9_]*"$
 "true"  { return TRU; }
 "false" { return FALS; }
 "null"  { return NUL; }
-"?"     { return QUE; }
 "new"   { return NEW; }
 "delete" { return DEL; }
 
@@ -46,6 +45,8 @@ stringg     ^"[a-zA-Z0-9_][a-zA-Z0-9_]*"$
 {intt}      { printf("Int entered\n"); return INT; }
 {charr}     { return CHAR; }
 {stringg}   { return STRING; }
+"?"     { return QUE; }
+":"     { return COLON; }
 "{"     { return LCURL; }
 "}"     { return RCURL; }
 "["     { return LARR; }

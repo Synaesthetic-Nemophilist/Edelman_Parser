@@ -15,7 +15,13 @@ bool myFunct2();
 
 void* myFunct1(int** param1, byref char param2) {
     int localVar1;
-    bool* localVar2;
+    bool localVar2;
+
+    localVar2 = myFunct2();  // function call
+
+    localVar2?localVar1:localVar1;
+
+
 
 
 
