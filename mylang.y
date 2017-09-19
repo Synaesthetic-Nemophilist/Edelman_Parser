@@ -1,8 +1,9 @@
 
 %{ /* C declarations used in actions */
  #include <stdio.h>
+ #include <string.h>
 
- #define YYSTYPE char*
+ #define MAX_TABLE_SIZE 100
 
 
 extern int yylex();
@@ -12,13 +13,18 @@ extern FILE *yyin;
 int line;
 extern int line;
 extern char* yytext;
+
+char* declaredVars[MAX_TABLE_SIZE];
+int varIndex;
+int searchIndex;
+
 int errors;
 int errorIndex;
 
 struct errorData
 {
    int line;
-   char errorMsg[50];
+   char errorMsg[100];
 };
 
 struct errorData *ptr;
@@ -32,7 +38,7 @@ struct errorData *ptr;
 
 %start program
 %token IF ELSE FOR COLON CONT RET BREAK TRU FALS NUL QUE NEW DEL SEMICOL COMMA
-%token ID INT DOUBLE CHAR STRING CHARDEC BOOLDEC DOUBDEC VOIDDEC INTDEC
+%token <str> ID INT DOUBLE CHAR STRING CHARDEC BOOLDEC DOUBDEC VOIDDEC INTDEC
 %token LARR RARR LPAR RPAR LCURL RCURL
 %right ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN SUB_ASSIGN
 %left OR
@@ -43,6 +49,7 @@ struct errorData *ptr;
 %left PLUS MINUS
 %left MUL DIV MOD
 %right INC_OP DEC_OP NOT BYREF
+
 
 
 %%
@@ -101,8 +108,8 @@ basic_data_type:
 
 
 declarative:
-		ID
-	|	ID LARR const_expr RARR
+		ID      { declaredVars[varIndex] = $1; varIndex++; }
+	|	ID LARR const_expr RARR     { declaredVars[varIndex] = $1; varIndex++; }
 	|   error SEMICOL
 	;
 
@@ -182,7 +189,26 @@ statement_list:
 	;
 
 expr:
-		ID
+		ID      {
+                    int flag = 0;
+                        for(searchIndex = 0; searchIndex < varIndex; searchIndex++)
+                        {
+                            if(!strcmp(declaredVars[searchIndex], $1))
+                            {
+                                flag = 1;
+                                break;
+                            }
+                        }
+
+                        if(flag==0)
+                        {
+                            char *varDecError = (char*)malloc(100 * sizeof(char));
+                            sprintf(varDecError, "Variable %s undeclared!!!\n");
+                            yyerror(varDecError);
+
+                        }
+
+                }
 	|	LPAR expr RPAR
 	|	TRU
 	|	FALS
@@ -288,7 +314,7 @@ int main(int args, char** argv) {
 	// parse through the input until there is no more:
 	//yydebug = 1;
 	line = 1;
-	errorIndex = 2;
+	errorIndex = 5;
 	ptr = (struct errorData*) malloc(errorIndex * sizeof(struct errorData));
 
 	do {
@@ -300,9 +326,11 @@ int main(int args, char** argv) {
 	    printf("Syntax is correct!!!\n");
     } else {
         printf("\n\n---------------------------------------\n");
-        printf("Syntax is incorrect!!!\n Total errors: %d\n", yynerrs);
+        printf("DEBUG\n");
+        printf("---------------------------------------\n");
+        printf("Syntax is incorrect!!!\n Total errors: %d\n", errors);
         for(int i = 0; i < errors; ++i) {
-            printf("Error %s in line: %d\n", ptr[i].errorMsg, ptr[i].line);
+            printf("ERROR: %s in line: %d\n", ptr[i].errorMsg, ptr[i].line);
         }
 
     }

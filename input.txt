@@ -19,6 +19,8 @@ void* myFunct1(int** param1, byref char param2) {
     int localInt;
     char c;
 
+    zz = 3;
+
     localVar2 = myFunct2();
 
 
@@ -29,7 +31,7 @@ void* myFunct1(int** param1, byref char param2) {
         new int[localInt];
     } else {
         localVar2 = false;
-        localInt = NULL;
+        localInt = null;
     }
 
 /* THIS DOES NOT FUNCTION CORRECTLY

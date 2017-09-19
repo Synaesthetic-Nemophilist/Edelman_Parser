@@ -187,8 +187,9 @@
 #line 2 "mylang.y"
  /* C declarations used in actions */
  #include <stdio.h>
+ #include <string.h>
 
- #define YYSTYPE char*
+ #define MAX_TABLE_SIZE 100
 
 
 extern int yylex();
@@ -198,13 +199,18 @@ extern FILE *yyin;
 int line;
 extern int line;
 extern char* yytext;
+
+char* declaredVars[MAX_TABLE_SIZE];
+int varIndex;
+int searchIndex;
+
 int errors;
 int errorIndex;
 
 struct errorData
 {
    int line;
-   char errorMsg[50];
+   char errorMsg[100];
 };
 
 struct errorData *ptr;
@@ -231,12 +237,12 @@ struct errorData *ptr;
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 29 "mylang.y"
+#line 35 "mylang.y"
 {
   char *str;
 }
 /* Line 193 of yacc.c.  */
-#line 240 "mylang.tab.c"
+#line 246 "mylang.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -249,7 +255,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 253 "mylang.tab.c"
+#line 259 "mylang.tab.c"
 
 #ifdef short
 # undef short
@@ -604,20 +610,20 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    52,    52,    53,    58,    59,    60,    64,    65,    66,
-      67,    72,    73,    74,    80,    81,    82,    86,    88,    89,
-      94,    95,    96,    97,    98,    99,   104,   105,   106,   111,
-     112,   113,   114,   115,   119,   120,   121,   125,   126,   127,
-     132,   133,   134,   135,   136,   141,   142,   143,   147,   148,
-     149,   150,   151,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   179,   180,   181,   185,
-     186,   187,   188,   189,   190,   191,   192,   193,   194,   195,
-     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
-     206,   207,   208,   209,   213,   214,   215,   219,   220,   225,
-     226,   227,   228,   229,   230,   234,   235,   236,   237,   238,
-     239,   240,   241,   242,   243,   244,   245,   246,   247,   251,
-     252,   253,   257,   258,   259,   260,   261,   262,   263
+       0,    59,    59,    60,    65,    66,    67,    71,    72,    73,
+      74,    79,    80,    81,    87,    88,    89,    93,    95,    96,
+     101,   102,   103,   104,   105,   106,   111,   112,   113,   118,
+     119,   120,   121,   122,   126,   127,   128,   132,   133,   134,
+     139,   140,   141,   142,   143,   148,   149,   150,   154,   155,
+     156,   157,   158,   159,   160,   161,   162,   163,   164,   165,
+     166,   167,   168,   169,   170,   171,   172,   173,   174,   175,
+     176,   177,   178,   179,   180,   181,   186,   187,   188,   192,
+     212,   213,   214,   215,   216,   217,   218,   219,   220,   221,
+     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
+     232,   233,   234,   235,   239,   240,   241,   245,   246,   251,
+     252,   253,   254,   255,   256,   260,   261,   262,   263,   264,
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   277,
+     278,   279,   283,   284,   285,   286,   287,   288,   289
 };
 #endif
 
@@ -2334,9 +2340,43 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-      
+        case 26:
+#line 111 "mylang.y"
+    { declaredVars[varIndex] = (yyvsp[(1) - (1)].str); varIndex++; ;}
+    break;
+
+  case 27:
+#line 112 "mylang.y"
+    { declaredVars[varIndex] = (yyvsp[(1) - (4)].str); varIndex++; ;}
+    break;
+
+  case 79:
+#line 192 "mylang.y"
+    {
+                    int flag = 0;
+                        for(searchIndex = 0; searchIndex < varIndex; searchIndex++)
+                        {
+                            if(!strcmp(declaredVars[searchIndex], (yyvsp[(1) - (1)].str)))
+                            {
+                                flag = 1;
+                                break;
+                            }
+                        }
+
+                        if(flag==0)
+                        {
+                            char *varDecError = (char*)malloc(100 * sizeof(char));
+                            snprintf(varDecError, "Variable %s undeclared!!!\n");
+                            yyerror(varDecError);
+
+                        }
+
+                ;}
+    break;
+
+
 /* Line 1267 of yacc.c.  */
-#line 2340 "mylang.tab.c"
+#line 2380 "mylang.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2550,7 +2590,7 @@ yyreturn:
 }
 
 
-#line 267 "mylang.y"
+#line 293 "mylang.y"
 
 
 #include <stdio.h>
@@ -2575,7 +2615,7 @@ int main(int args, char** argv) {
 	// parse through the input until there is no more:
 	//yydebug = 1;
 	line = 1;
-	errorIndex = 2;
+	errorIndex = 5;
 	ptr = (struct errorData*) malloc(errorIndex * sizeof(struct errorData));
 
 	do {
@@ -2587,9 +2627,11 @@ int main(int args, char** argv) {
 	    printf("Syntax is correct!!!\n");
     } else {
         printf("\n\n---------------------------------------\n");
-        printf("Syntax is incorrect!!!\n Total errors: %d\n", yynerrs);
+        printf("DEBUG\n");
+        printf("---------------------------------------\n");
+        printf("Syntax is incorrect!!!\n Total errors: %d\n", errors);
         for(int i = 0; i < errors; ++i) {
-            printf("Error %s in line: %d\n", ptr[i].errorMsg, ptr[i].line);
+            printf("ERROR: %s in line: %d\n", ptr[i].errorMsg, ptr[i].line);
         }
 
     }
