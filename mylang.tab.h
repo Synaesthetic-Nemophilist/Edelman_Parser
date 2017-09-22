@@ -79,12 +79,12 @@
      OR = 295,
      AND = 296,
      BIN_AND = 297,
-     NOT_EQ = 298,
-     EQ = 299,
-     GT_EQ = 300,
-     LT_EQ = 301,
-     GT = 302,
-     LT = 303,
+     GT_EQ = 298,
+     LT_EQ = 299,
+     GT = 300,
+     LT = 301,
+     NOT_EQ = 302,
+     EQ = 303,
      MINUS = 304,
      PLUS = 305,
      MOD = 306,
@@ -137,12 +137,12 @@
 #define OR 295
 #define AND 296
 #define BIN_AND 297
-#define NOT_EQ 298
-#define EQ 299
-#define GT_EQ 300
-#define LT_EQ 301
-#define GT 302
-#define LT 303
+#define GT_EQ 298
+#define LT_EQ 299
+#define GT 300
+#define LT 301
+#define NOT_EQ 302
+#define EQ 303
 #define MINUS 304
 #define PLUS 305
 #define MOD 306
@@ -158,7 +158,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 35 "mylang.y"
+#line 43 "mylang.y"
 {
   char *str;
 }

@@ -3,6 +3,7 @@
  #include <stdio.h>
  #include <string.h>
 
+ #define YYDEBUG 1
  #define MAX_TABLE_SIZE 100
 
 
@@ -14,9 +15,16 @@ int line;
 extern int line;
 extern char* yytext;
 
+
+// Type Declaration vars
 char* declaredVars[MAX_TABLE_SIZE];
 int varIndex;
-int searchIndex;
+
+char* declaredFuncts[MAX_TABLE_SIZE];
+int functIndex;
+
+// utility function for looking up declared IDs
+int searchDeclared(char**, int, char*);
 
 int errors;
 int errorIndex;
@@ -44,8 +52,7 @@ struct errorData *ptr;
 %left OR
 %left AND
 %left BIN_AND
-%left EQ NOT_EQ
-%left LT GT LT_EQ GT_EQ
+%left EQ NOT_EQ LT GT LT_EQ GT_EQ
 %left PLUS MINUS
 %left MUL DIV MOD
 %right INC_OP DEC_OP NOT BYREF
@@ -108,17 +115,17 @@ basic_data_type:
 
 
 declarative:
-		ID      { declaredVars[varIndex] = $1; varIndex++; }
+		ID                          { declaredVars[varIndex] = $1; varIndex++; }
 	|	ID LARR const_expr RARR     { declaredVars[varIndex] = $1; varIndex++; }
 	|   error SEMICOL
 	;
 
 
 func_dec:
-		basic_data_type stars ID LPAR parameter_list RPAR SEMICOL
-	|	basic_data_type stars ID LPAR RPAR SEMICOL
-	|	basic_data_type ID LPAR parameter_list RPAR SEMICOL
-    |	basic_data_type ID LPAR RPAR SEMICOL
+		basic_data_type stars ID LPAR parameter_list RPAR SEMICOL   { declaredFuncts[functIndex] = $3; functIndex++; }
+	|	basic_data_type stars ID LPAR RPAR SEMICOL                  { declaredFuncts[functIndex] = $3; functIndex++; }
+	|	basic_data_type ID LPAR parameter_list RPAR SEMICOL         { declaredFuncts[functIndex] = $2; functIndex++; }
+    |	basic_data_type ID LPAR RPAR SEMICOL                        { declaredFuncts[functIndex] = $2; functIndex++; }
 	|   func_dec error SEMICOL
 	;
 
@@ -136,17 +143,41 @@ parameter:
 
 
 func_def:
-		basic_data_type stars ID LPAR parameter_list RPAR LCURL declare_list statement_list RCURL
-	|	basic_data_type stars ID LPAR RPAR LCURL declare_list statement_list RCURL
-	|	basic_data_type ID LPAR parameter_list RPAR LCURL declare_list statement_list RCURL
-    |	basic_data_type ID LPAR RPAR LCURL declare_list statement_list RCURL
+		basic_data_type stars ID LPAR parameter_list RPAR LCURL declare_list statement_list RCURL   {
+                                                                                                        if(!searchDeclared(declaredFuncts, functIndex, $3))
+                                                                                                        {
+                                                                                                            declaredFuncts[functIndex] = $3;
+                                                                                                            functIndex++;
+                                                                                                        }
+                                                                                                    }
+	|	basic_data_type stars ID LPAR RPAR LCURL declare_list statement_list RCURL                  {
+                                                                                                        if(!searchDeclared(declaredFuncts, functIndex, $3))
+                                                                                                        {
+                                                                                                            declaredFuncts[functIndex] = $3;
+                                                                                                            functIndex++;
+                                                                                                        }
+                                                                                                    }
+	|	basic_data_type ID LPAR parameter_list RPAR LCURL declare_list statement_list RCURL         {
+                                                                                                        if(!searchDeclared(declaredFuncts, functIndex, $2))
+                                                                                                        {
+                                                                                                            declaredFuncts[functIndex] = $2;
+                                                                                                            functIndex++;
+                                                                                                        }
+                                                                                                    }
+    |	basic_data_type ID LPAR RPAR LCURL declare_list statement_list RCURL                        {
+                                                                                                        if(!searchDeclared(declaredFuncts, functIndex, $2))
+                                                                                                        {
+                                                                                                            declaredFuncts[functIndex] = $2;
+                                                                                                            functIndex++;
+                                                                                                        }
+                                                                                                    }
 	|   func_def error SEMICOL
 	;
 
 
 declare_list:
-		declare_list dec
-	|
+
+	|   declare_list dec
 	|   error SEMICOL
 	;
 
@@ -183,32 +214,22 @@ statement:
 
 
 statement_list:
-		statement_list statement
-	|
+
+    |	statement_list statement
 	|   error SEMICOL
 	;
 
 expr:
-		ID      {
-                    int flag = 0;
-                        for(searchIndex = 0; searchIndex < varIndex; searchIndex++)
-                        {
-                            if(!strcmp(declaredVars[searchIndex], $1))
-                            {
-                                flag = 1;
-                                break;
-                            }
-                        }
+        ID                      {
+                                    if(!searchDeclared(declaredVars, varIndex, $1))
+                                    {
+                                        //varDecError = realloc(varDecError, 100 * sizeof(char));
+                                        char varDecError[100];
 
-                        if(flag==0)
-                        {
-                            char *varDecError = (char*)malloc(100 * sizeof(char));
-                            sprintf(varDecError, "Variable %s undeclared!!!\n");
-                            yyerror(varDecError);
-
-                        }
-
-                }
+                                        sprintf(varDecError, "%s undeclared ", $1);
+                                        yyerror(varDecError);
+                                    }
+                                }
 	|	LPAR expr RPAR
 	|	TRU
 	|	FALS
@@ -218,9 +239,27 @@ expr:
 	|	DOUBLE
 	|	STRING
 	|	LPAR RPAR
-	|	ID LPAR RPAR
+	|	ID LPAR RPAR            {
+                                    if(!searchDeclared(declaredFuncts, functIndex, $1))
+                                    {
+                                        //functDecError = realloc(functDecError, 100 * sizeof(char));
+                                        char functDecError[100];
+
+                                        sprintf(functDecError, "%s undeclared ", $1);
+                                        yyerror(functDecError);
+                                    }
+                                }
 	|	LPAR expr_list RPAR
-	|	ID LPAR expr_list RPAR
+	|	ID LPAR expr_list RPAR  {
+                                    if(!searchDeclared(declaredFuncts, functIndex, $1))
+                                    {
+                                        //functDecError = realloc(functDecError, 100 * sizeof(char));
+
+                                        char functDecError[100];
+                                        sprintf(functDecError, "%s undeclared ", $1);
+                                        yyerror(functDecError);
+                                    }
+                                }
 	|	expr LARR expr RARR
 	|	un_op expr
 	|	expr bin_op expr
@@ -232,7 +271,7 @@ expr:
 	|	NEW basic_data_type LARR expr RARR
 	|	NEW basic_data_type
 	|	DEL expr
-	|   error SEMICOL
+	|   error
 	;
 
 expr_list:
@@ -300,7 +339,7 @@ bin_assgn_op:
 
 int main(int args, char** argv) {
 	// open a file handle to a particular file:
-	FILE *myfile = fopen("input.txt", "r");
+	FILE *myfile = fopen(argv[1], "r");
 
 	// make sure it is valid:
 	if (!myfile) {
@@ -311,12 +350,13 @@ int main(int args, char** argv) {
 	// set flex to read from it instead of defaulting to STDIN:
 	yyin = myfile;
 
-	// parse through the input until there is no more:
-	//yydebug = 1;
+	yydebug = 1;
 	line = 1;
 	errorIndex = 5;
 	ptr = (struct errorData*) malloc(errorIndex * sizeof(struct errorData));
 
+
+	// parse through the input until there is no more:
 	do {
 		yyparse();
 	} while (!feof(yyin));
@@ -349,3 +389,16 @@ yyerror(const char *s) {
 
 }
 
+
+
+
+int searchDeclared(char** dec, int idx, char* id) {
+    for(int searchIndex = 0; searchIndex < idx; searchIndex++)
+    {
+        if(!strcmp(dec[searchIndex], id))
+        {
+            return 1;  // id already declared
+        }
+    }
+    return 0;  // id never declared before
+}
