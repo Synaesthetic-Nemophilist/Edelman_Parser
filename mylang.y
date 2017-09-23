@@ -3,7 +3,6 @@
  #include <stdio.h>
  #include <string.h>
 
- #define YYDEBUG 1
  #define MAX_TABLE_SIZE 100
 
 
@@ -45,7 +44,7 @@ struct errorData *ptr;
 }
 
 %start program
-%token IF ELSE FOR COLON CONT RET BREAK TRU FALS NUL QUE NEW DEL SEMICOL COMMA
+%token IF ELSE FOR COLON CONT RET BREAK TRU FALS NUL QUE NEW DEL SEMICOL COMMA FOR
 %token <str> ID INT DOUBLE CHAR STRING CHARDEC BOOLDEC DOUBDEC VOIDDEC INTDEC
 %token LARR RARR LPAR RPAR LCURL RCURL
 %right ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN SUB_ASSIGN
@@ -64,14 +63,14 @@ struct errorData *ptr;
 
 program:
 		dec_list
-    |   error SEMICOL
+    |   error
 	;
 
 
 dec_list:
 		dec
  	|	dec dec_list
- 	|   error SEMICOL
+ 	|   error
  	;
 
 dec:
@@ -100,7 +99,7 @@ declarative_list:
 stars:
 
 	|   stars MUL
-	|   error SEMICOL
+	|   error
 	;
 
 
@@ -110,14 +109,14 @@ basic_data_type:
 	|	BOOLDEC
 	|	DOUBDEC
 	|   VOIDDEC
-	|   error SEMICOL
+	|   error
 	;
 
 
 declarative:
 		ID                          { declaredVars[varIndex] = $1; varIndex++; }
 	|	ID LARR const_expr RARR     { declaredVars[varIndex] = $1; varIndex++; }
-	|   error SEMICOL
+	|   error
 	;
 
 
@@ -138,7 +137,7 @@ parameter_list:
 parameter:
 		BYREF basic_data_type stars ID
 	|	basic_data_type stars ID
-	|   error SEMICOL
+	|   error
 	;
 
 
@@ -171,14 +170,14 @@ func_def:
                                                                                                             functIndex++;
                                                                                                         }
                                                                                                     }
-	|   func_def error SEMICOL
+	|   func_def error
 	;
 
 
 declare_list:
 
 	|   declare_list dec
-	|   error SEMICOL
+	|   error
 	;
 
 statement:
@@ -216,7 +215,7 @@ statement:
 statement_list:
 
     |	statement_list statement
-	|   error SEMICOL
+	|   statement_list error
 	;
 
 expr:
@@ -271,18 +270,18 @@ expr:
 	|	NEW basic_data_type LARR expr RARR
 	|	NEW basic_data_type
 	|	DEL expr
-	|   error
+	|   expr error
 	;
 
 expr_list:
 		expr
-	|	expr_list','expr
-	|   expr_list error SEMICOL
+	|	expr_list COMMA expr
+	|   expr_list error
 	;
 
 const_expr:
 		expr
-    |   const_expr error SEMICOL
+    |   const_expr error
     ;
 
 
@@ -292,7 +291,7 @@ un_op:
 	|	PLUS
 	|	MINUS
 	|	NOT
-	|   error SEMICOL
+	|   un_op error SEMICOL
 	;
 
 bin_op:
@@ -309,13 +308,13 @@ bin_op:
 	|	NOT_EQ
 	|	AND
 	|	OR
-	|   error SEMICOL
+	|   bin_op error SEMICOL
 	;
 
 un_assgn_op:
 		INC_OP
 	|	DEC_OP
-	|   error SEMICOL
+	|   un_assgn_op error SEMICOL
 	;
 
 bin_assgn_op:
@@ -325,7 +324,7 @@ bin_assgn_op:
 	|	MOD_ASSIGN
 	|	ADD_ASSIGN
 	|	SUB_ASSIGN
-	|   bin_assgn_op error '\n'
+	|   bin_assgn_op error SEMICOL
 	;
 
 
@@ -350,7 +349,7 @@ int main(int args, char** argv) {
 	// set flex to read from it instead of defaulting to STDIN:
 	yyin = myfile;
 
-	yydebug = 1;
+	//yydebug = 1;
 	line = 1;
 	errorIndex = 5;
 	ptr = (struct errorData*) malloc(errorIndex * sizeof(struct errorData));

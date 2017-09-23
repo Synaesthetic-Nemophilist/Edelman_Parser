@@ -1,6 +1,9 @@
 %{
 #include "mylang.tab.h"
 #include <string.h>
+char buf[200];
+char *s;
+
 #define YYSTYPE char*
 
 
@@ -11,15 +14,14 @@ extern int line;
 
 
 idd         [a-zA-Z_][a-zA-Z0-9_]*
-floatt      [0-9]+.[0-9]*
+floatt      [0-9]+\.[0-9]*
 intt        [0-9]+
-charr       ^'[a-zA-Z]'$
-stringg     ^"[a-zA-Z0-9_][a-zA-Z0-9_]*"$
-
 
 
 %x MULTICOMMENT
 %x SINGLECOMMENT
+%x CHARSTATE
+%x STRINGSTATE
 
 
 %%
@@ -40,12 +42,12 @@ stringg     ^"[a-zA-Z0-9_][a-zA-Z0-9_]*"$
 "null"  { yylval.str = strdup(yytext); ECHO; return NUL; }
 "new"   { yylval.str = strdup(yytext); ECHO; return NEW; }
 "delete" { yylval.str = strdup(yytext); ECHO; return DEL; }
+"for"     { yylval.str = strdup(yytext); ECHO; return FOR; }
 
-{idd}       { yylval.str = strdup(yytext); ECHO; return ID; }
-{floatt}    { yylval.str = strdup(yytext); ECHO; return DOUBLE; }
 {intt}      { yylval.str = strdup(yytext); ECHO; return INT; }
-{charr}     { yylval.str = strdup(yytext); ECHO; return CHAR; }
-{stringg}   { yylval.str = strdup(yytext); ECHO; return STRING; }
+{floatt}    { yylval.str = strdup(yytext); ECHO; return DOUBLE; }
+{idd}       { yylval.str = strdup(yytext); ECHO; return ID; }
+
 "?"     { yylval.str = strdup(yytext); ECHO; return QUE; }
 ":"     { yylval.str = strdup(yytext); ECHO; return COLON; }
 "{"     { yylval.str = strdup(yytext); ECHO; return LCURL; }
@@ -111,6 +113,44 @@ stringg     ^"[a-zA-Z0-9_][a-zA-Z0-9_]*"$
                 	      ++line;
                       }
 <SINGLECOMMENT>.      yylval.str = strdup(yytext); ECHO;
+
+
+
+\'                  {
+                        s = buf;
+                        *s++ = *yytext;
+                        ECHO;
+                        BEGIN(CHARSTATE);
+                    }
+
+<CHARSTATE>\'       {
+                        BEGIN(INITIAL);
+                        *s = '\0';
+                        yylval.str = buf;
+                        ECHO;
+                        return CHAR;
+                    }
+
+<CHARSTATE>.        {   *s++ = *yytext; ECHO;  }
+
+
+\"                  {
+                        s = buf;
+                        *s++ = *yytext;
+                        ECHO;
+                        BEGIN(STRINGSTATE);
+                    }
+
+<STRINGSTATE>\"     {
+                        BEGIN(INITIAL);
+                        *s = '\0';
+                        yylval.str = buf;
+                        ECHO;
+                        return STRING;
+                    }
+
+<STRINGSTATE>.      {   *s++ = *yytext; ECHO;  }
+
 
 %%
 

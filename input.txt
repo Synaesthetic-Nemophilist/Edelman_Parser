@@ -18,22 +18,20 @@ void* myFunct1(int** param1, byref char param2) {
     bool localVar2;
     int localInt;
     char c;
+    char* myString = "Test_string34";
 
     // Undeclared, should raise error
-    zz = 3;;
+    //zz = 3 - 2;
 
-    c = 4;;
+    localVar2 = myFunct2();
 
+    c = 'g';
 
-    localVar2 = myFunct2();;
-
-    c = 453463;;
-
+    localInt = 42345235;
 
 
-    localVar2?(localVar1++):localVar1 = 45;;
-
-    if(c == 565;) {
+    if(localVar2 == true) {
+        localVar2?(localVar1 += 4.432):localVar1 += 4;
         localVar1 -= 2.34;
         new int[localInt];
     } else {
@@ -41,13 +39,9 @@ void* myFunct1(int** param1, byref char param2) {
         localInt = null;
     }
 
-
-/*
-    for(; ; ) {
-        myfunct2();
+    loop1:for( true; true; true ) {
+        ;
     }
-*/
-
 
 
 }
